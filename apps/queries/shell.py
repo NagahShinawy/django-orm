@@ -1,5 +1,9 @@
 from typing import Union
 from django.db import models
+
+# from django.contrib.auth.models import User
+from django.db.models import Q
+
 from .models import Developer, Task
 
 # from apps.queries.shell import *
@@ -34,3 +38,20 @@ def find_seniors_dev() -> models.QuerySet:
 
 def find_by_age(age: Union[int, str]) -> models.QuerySet:
     return Developer.objects.filter(age=age)
+
+
+def find_devs_by_start_or_end_char(char: str) -> models.QuerySet:
+    return Developer.objects.filter(Q(name__istartswith=char) | Q(name__iendswith=char))
+
+
+def create_lookups(*args):
+    lookups = [
+        Q(name__istartswith=char) | Q(name__istartswith=args[args.index(char) + 1])
+        for char in args
+        if char != args[-1]
+    ]
+    return lookups
+
+
+def find_devs_by_start_chars(*args) -> models.QuerySet:
+    return Developer.objects.filter(*create_lookups(*args))
