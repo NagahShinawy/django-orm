@@ -5,11 +5,10 @@ from django.db import models
 from django.db.models import Q
 
 from .models import Developer, Task
+from .constant import LOOKUP_SEP, SENIOR_AGE
 
 # from apps.queries.shell import *
 # from apps.queries.models import Task, Developer
-
-SENIOR_AGE = 30
 
 
 def developers_list() -> models.QuerySet:
@@ -53,5 +52,20 @@ def create_lookups(*args):
     return lookups
 
 
+def qs_filter(
+    qs: models.QuerySet, field: str, expression: str, value
+) -> models.QuerySet:
+    lookup = LOOKUP_SEP.join([field, expression])
+    return qs.filter(**{lookup: value})
+
+
 def find_devs_by_start_chars(*args) -> models.QuerySet:
     return Developer.objects.filter(*create_lookups(*args))
+
+
+# TODO: find the best solution for dynamic filter
+def find_devs_by_start_chars2(*args):
+    pass
+
+
+# from apps.queries.shell import *

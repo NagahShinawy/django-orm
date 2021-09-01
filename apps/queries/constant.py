@@ -1,0 +1,3 @@
+LOOKUP_SEP = "__"
+
+SENIOR_AGE = 30
