@@ -1,0 +1,20 @@
+3. How to do AND queries in Django ORM?
+
+Django provides three options.
+
+filter(<condition_1>, <condition_2>)
+queryset_1 & queryset_2
+filter(Q(<condition_1>) & Q(<condition_2>))
+
+
+=================================================
+
+exclude
+
+Django provides two options.
+
+exclude(<condition>)
+filter(~Q(<condition>))
+
+=================================================
+

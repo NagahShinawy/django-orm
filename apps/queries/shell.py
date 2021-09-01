@@ -1,11 +1,12 @@
 from typing import Union
 from django.db import models
 
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.db.models import Q
 
 from .models import Developer, Task
 from .constant import LOOKUP_SEP, SENIOR_AGE
+
 
 # from apps.queries.shell import *
 # from apps.queries.models import Task, Developer
@@ -53,7 +54,7 @@ def create_lookups(*args):
 
 
 def qs_filter(
-    qs: models.QuerySet, field: str, expression: str, value
+        qs: models.QuerySet, field: str, expression: str, value
 ) -> models.QuerySet:
     lookup = LOOKUP_SEP.join([field, expression])
     return qs.filter(**{lookup: value})
@@ -68,4 +69,51 @@ def find_devs_by_start_chars2(*args):
     pass
 
 
+def tasks_with_fchar_match_lchar(char):
+    # you have 3 options
+    print(
+        Task.objects.filter(title__istartswith=char, title__iendswith=char)
+    )  # first option
+    print(
+        Task.objects.filter(title__istartswith=char)
+        & Task.objects.filter(title__iendswith=char),
+    )  # second option
+
+    print(Task.objects.filter(Q(title__istartswith=char) & Q(title__iendswith=char)))
+
+
+def exclude_developer(name):
+    return Developer.objects.exclude(name__iexact=name, )
+
+
+def exclude_developers(*args):
+    if not args:
+        return
+    qs = Developer.objects.exclude(name__iexact=args[0])
+    for name in args[1:]:
+        qs = qs.exclude(name__in=name)
+    return qs
+
+
+def exclude_developers_2(*args):
+    qs = Developer.objects.all()
+    for name in args:
+        qs = qs.exclude(name__iexact=name)
+    return qs
+
+
+# use oop with cls methods to make it dynamic with model name. HERE it just to test
+def exclude_users(*args):
+    qs = User.objects.all()
+    for name in args:
+        qs = qs.exclude(name__iexact=name)
+    return qs
+
+
+print(exclude_developer("JohN"))
+print(exclude_developers("JohN", "SARA", "James"))
+print(exclude_developers_2("JohN", "SARA", "James"))
+
+queryset = Developer.objects.filter(~Q(id__lt=5))  # all except less than 5
+print(queryset)  # qs = 5, 6, 7, 8, ......
 # from apps.queries.shell import *
