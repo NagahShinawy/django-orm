@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class QueriesConfig(AppConfig):
-    name = 'queries'
+    name = "apps.queries"
