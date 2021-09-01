@@ -18,8 +18,9 @@ class Task(models.Model):
 
 
 class Developer(models.Model):
+    UNDER_AGE = 18
     name = models.CharField(max_length=256)
-    age = models.IntegerField(default=18, null=True, blank=True)
+    age = models.IntegerField(default=UNDER_AGE, null=True, blank=True)
 
     def __str__(self):
         return self.name
